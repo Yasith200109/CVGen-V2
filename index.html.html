@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional CV Builder</title>
+    <!-- Load external libraries via CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://unpkg.com/docx@8.2.2/build/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(to bottom right, #f8fafc, #f1f5f9);
+            color: #1e293b;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+        
+        /* Header styles */
+        header {
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem 0;
+            text-align: center;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(to right, #9333ea, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: bold;
+            font-size: 2rem;
+        }
+        
+        .subtitle {
+            color: #64748b;
+            margin-top: 0.5rem;
+        }
+        
+        /* Main container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tab-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            width: 100%;
+            max-width: 400px;
+            background-color: #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 0.25rem;
+        }
+        
+        .tab-trigger {
+            padding: 0.5rem 1rem;
+            text-align: center;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .tab-trigger.active {
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Card styles */
+        .card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .card-title-icon {
+            color: #9333ea;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        /* Form styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+        
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #9333ea;
+            box-shadow: 0 0 0 2px rgba(147, 51, 234, 0.2);
+        }
+        
+        /* Button styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-size: 0.875rem;
+        }
+        
+        .btn-primary {
+            background-color: #9333ea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #7e22ce;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #cbd5e1;
+            color: #64748b;
+        }
+        
+        .btn-outline:hover {
+            background-color: #f8fafc;
+            border-color: #94a3b8;
+        }
+        
+        .btn-danger {
+            color: #ef4444;
+            background-color: transparent;
+        }
+        
+        .btn-danger:hover {
+            background-color: #fee2e2;
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+        
+        .btn-icon {
+            padding: 0.25rem;
+        }
+        
+        /* Dynamic entry styles */
+        .dynamic-entry {
+            position: relative;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.25rem;
+            background-color: #f8fafc;
+            margin-bottom: 1rem;
+        }
+        
+        .remove-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+        }
+        
+        /* Preview styles */
+        .preview-container {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .export-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 120px;
+            background-color: #1e293b;
+            color: white;
+            text-align: center;
+            border-radius: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.75rem;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .resume {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.25rem;
+            overflow: hidden;
+        }
+        
+        @media (min-width: 768px) {
+            .resume {
+                flex-direction: row;
+            }
+        }
+        
+        .resume-left {
+            width: 100%;
+            background: linear-gradient(to bottom, #9333ea, #3b82f6);
+            color: white;
+            padding: 1.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            .resume-left {
+                width: 33.333333%;
+            }
+        }
+        
+        .resume-right {
+            width: 100%;
+            padding: 1.5rem;
+            background-color: white;
+        }
+        
+        @media (min-width: 768px) {
+            .resume-right {
+                width: 66.666667%;
+            }
+        }
+        
+        .resume-photo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .resume-photo {
+            width: 8rem;
+            height: 8rem;
+            border-radius: 9999px;
+            border: 4px solid white;
+            object-fit: cover;
+            margin-bottom: 1rem;
+        }
+        
+        .resume-photo-placeholder {
+            width: 8rem;
+            height: 8rem;
+            border-radius: 9999px;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        
+        .resume-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-align: center;
+        }
+        
+        .resume-contact {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            word-break: break-all;
+        }
+        
+        .resume-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .resume-section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #9333ea;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .resume-section-title-light {
+            font-size: 1.125rem;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resume-list {
+            list-style-position: inside;
+            list-style-type: disc;
+            margin-top: 0.5rem;
+        }
+        
+        .resume-list li {
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+        
+        .resume-entry {
+            margin-bottom: 1rem;
+        }
+        
+        .resume-entry-title {
+            font-weight: 600;
+        }
+        
+        .resume-entry-subtitle {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+        
+        .placeholder-text {
+            color: #94a3b8;
+            font-style: italic;
+        }
+        
+        /* Photo preview */
+        .photo-preview {
+            width: 6rem;
+            height: 6rem;
+            border-radius: 9999px;
+            object-fit: cover;
+            margin-top: 0.5rem;
+            border: 2px solid #e9d5ff;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: white;
+            border-top: 1px solid #e2e8f0;
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+        
+        /* Icons */
+        .icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            stroke-width: 0;
+            stroke: currentColor;
+            fill: currentColor;
+            vertical-align: middle;
+        }
+        
+        .icon-sm {
+            width: 1rem;
+            height: 1rem;
+        }
+        
+        .icon-md {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+        
+        .icon-lg {
+            width: 4rem;
+            height: 4rem;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="gradient-text">Professional CV Builder</h1>
+        <p class="subtitle">Create a stunning CV in minutes and export in multiple formats</p>
+    </header>
+    
+    <main class="container">
+        <div class="tabs">
+            <div class="tab-list">
+                <div class="tab-trigger active" data-tab="form">Edit CV</div>
+                <div class="tab-trigger" data-tab="preview">Preview</div>
+            </div>
+        </div>
+        
+        <div class="tab-content active" id="form-tab">
+            <div class="form-grid">
+                <!-- Personal Information -->
+                <div class="card">
+                    <div class="card-title">
+                        <svg class="icon icon-md card-title-icon" viewBox="0 0 24 24">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+                        </svg>
+                        <h2>Personal Information</h2>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="name">Full Name</label>
+                        <input class="form-input" type="text" id="name" placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <input class="form-input" type="email" id="email" placeholder="john.doe@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="phone">Phone Number</label>
+                        <input class="form-input" type="tel" id="phone" placeholder="+1 234 567 890">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="address">Address</label>
+                        <input class="form-input" type="text" id="address" placeholder="123 Main St, City, Country">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="linkedin">LinkedIn Profile URL</label>
+                        <input class="form-input" type="text" id="linkedin" placeholder="https://linkedin.com/in/johndoe">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="photo">Profile Photo</label>
+                        <input class="form-input" type="file" id="photo" accept="image/*">
+                        <div id="photo-preview-container" style="display: none;">
+                            <img id="photo-preview" class="photo-preview" src="/placeholder.svg" alt="Preview">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- About Me -->
+                <div class="card">
+                    <div class="card-title">
+                        <svg class="icon icon-md card-title-icon" viewBox="0 0 24 24">
+                            <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"></path>
+                        </svg>
+                        <h2>About Me</h2>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="objective">Career Objective</label>
+                        <textarea class="form-textarea" id="objective" placeholder="Briefly describe your career goals and professional background"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Education -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <svg class="icon icon-md card-title-icon" viewBox="0 0 24 24">
+                                <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"></path>
+                            </svg>
+                            <h2>Education</h2>
+                        </div>
+                        <button class="btn btn-outline btn-sm" id="add-education">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24" style="margin-right: 4px;">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path>
+                            </svg>
+                            Add
+                        </button>
+                    </div>
+                    <div id="education-container">
+                        <div class="dynamic-entry">
+                            <button class="btn btn-danger btn-sm btn-icon remove-btn" style="display: none;">
+                                <svg class="icon icon-sm" viewBox="0 0 24 24">
+                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"></path>
+                                </svg>
+                            </button>
+                            <div class="form-group">
+                                <label class="form-label" for="edu-institution-0">Institution Name</label>
+                                <input class="form-input" type="text" id="edu-institution-0" placeholder="Harvard University">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="edu-degree-0">Degree</label>
+                                <input class="form-input" type="text" id="edu-degree-0" placeholder="Bachelor of Science in Computer Science">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="edu-year-0">Year</label>
+                                <input class="form-input" type="text" id="edu-year-0" placeholder="2018-2022">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Experience -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <svg class="icon icon-md card-title-icon" viewBox="0 0 24 24">
+                                <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"></path>
+                            </svg>
+                            <h2>Experience</h2>
+                        </div>
+                        <button class="btn btn-outline btn-sm" id="add-experience">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24" style="margin-right: 4px;">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path>
+                            </svg>
+                            Add
+                        </button>
+                    </div>
+                    <div id="experience-container">
+                        <div class="dynamic-entry">
+                            <button class="btn btn-danger btn-sm btn-icon remove-btn" style="display: none;">
+                                <svg class="icon icon-sm" viewBox="0 0 24 24">
+                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"></path>
+                                </svg>
+                            </button>
+                            <div class="form-group">
+                                <label class="form-label" for="exp-company-0">Company Name</label>
+                                <input class="form-input" type="text" id="exp-company-0" placeholder="Google">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="exp-position-0">Position</label>
+                                <input class="form-input" type="text" id="exp-position-0" placeholder="Senior Software Engineer">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="exp-year-0">Year</label>
+                                <input class="form-input" type="text" id="exp-year-0" placeholder="2020-Present">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Skills -->
+                <div class="card">
+                    <div class="card-title">
+                        <svg class="icon icon-md card-title-icon" viewBox="0 0 24 24">
+                            <path d="M13 3.06V11h8.94c-.3-4.17-3.72-7.48-8.94-7.94zm-2 0c-5.22.46-9.36 4.77-9.36 10.06 0 5.52 4.48 10 10 10 5.29 0 9.6-4.14 10.06-9.36H11V3.06z"></path>
+                        </svg>
+                        <h2>Skills</h2>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="skills">List your skills (one per line)</label>
+                        <textarea class="form-textarea" id="skills" placeholder="JavaScript
+React
+Node.js
+UI/UX Design"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Achievements -->
+                <div class="card">
+                    <div class="card-title">
+                        <svg class="icon icon-md card-title-icon" viewBox="0 0 24 24">
+                            <path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"></path>
+                        </svg>
+                        <h2>Achievements</h2>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="achievements">List your achievements (one per line)</label>
+                        <textarea class="form-textarea" id="achievements" placeholder="Led a team of 5 developers to deliver a project ahead of schedule
+Increased website performance by 40%
+Published 3 research papers"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Strengths -->
+                <div class="card">
+                    <div class="card-title">
+                        <svg class="icon icon-md card-title-icon" viewBox="0 0 24 24">
+                            <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45 7.77 18l1.12-4.81-3.73-3.23 4.92-.42L12 5l1.92 4.53 4.92.42-3.73 3.23L16.23 18z"></path>
+                        </svg>
+                        <h2>Strengths</h2>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="strengths">List your strengths (one per line)</label>
+                        <textarea class="form-textarea" id="strengths" placeholder="Problem solving
+Team leadership
+Attention to detail"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Weaknesses -->
+                <div class="card">
+                    <div class="card-title">
+                        <svg class="icon icon-md card-title-icon" viewBox="0 0 24 24">
+                            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path>
+                        </svg>
+                        <h2>Weaknesses</h2>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="weaknesses">List your weaknesses (one per line)</label>
+                        <textarea class="form-textarea" id="weaknesses" placeholder="Public speaking
+Work-life balance
+Perfectionism"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="preview-tab">
+            <div class="preview-container">
+                <div class="export-buttons">
+                    <div class="tooltip">
+                        <button class="btn btn-outline btn-sm" id="export-pdf">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24" style="margin-right: 4px;">
+                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"></path>
+                            </svg>
+                            PDF
+                        </button>
+                        <span class="tooltip-text">Export as PDF</span>
+                    </div>
+                    <div class="tooltip">
+                        <button class="btn btn-outline btn-sm" id="export-docx">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24" style="margin-right: 4px;">
+                                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"></path>
+                            </svg>
+                            DOCX
+                        </button>
+                        <span class="tooltip-text">Export as DOCX</span>
+                    </div>
+                    <div class="tooltip">
+                        <button class="btn btn-outline btn-sm" id="export-png">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24" style="margin-right: 4px;">
+                                <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"></path>
+                            </svg>
+                            PNG
+                        </button>
+                        <span class="tooltip-text">Export as PNG</span>
+                    </div>
+                </div>
+                
+                <div class="resume" id="resume">
+                    <div class="resume-left">
+                        <div class="resume-photo-container">
+                            <div class="resume-photo-placeholder" id="resume-photo-placeholder">
+                                <svg class="icon icon-lg" viewBox="0 0 24 24">
+                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+                                </svg>
+                            </div>
+                            <img class="resume-photo" id="resume-photo" src="/placeholder.svg" alt="" style="display: none;">
+                            <h2 class="resume-name" id="preview-name">Your Name</h2>
+                        </div>
+                        
+                        <div class="resume-contact">
+                            <div class="contact-item" id="preview-email-container" style="display: none;">
+                                <svg class="icon icon-sm" viewBox="0 0 24 24">
+                                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"></path>
+                                </svg>
+                                <span id="preview-email"></span>
+                            </div>
+                            <div class="contact-item" id="preview-phone-container" style="display: none;">
+                                <svg class="icon icon-sm" viewBox="0 0 24 24">
+                                    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"></path>
+                                </svg>
+                                <span id="preview-phone"></span>
+                            </div>
+                            <div class="contact-item" id="preview-address-container" style="display: none;">
+                                <svg class="icon icon-sm" viewBox="0 0 24 24">
+                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path>
+                                </svg>
+                                <span id="preview-address"></span>
+                            </div>
+                            <div class="contact-item" id="preview-linkedin-container" style="display: none;">
+                                <svg class="icon icon-sm" viewBox="0 0 24 24">
+                                    <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"></path>
+                                </svg>
+                                <span id="preview-linkedin"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="resume-section">
+                            <h3 class="resume-section-title-light">Strengths</h3>
+                            <ul class="resume-list" id="preview-strengths">
+                                <li class="placeholder-text">Problem solving</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="resume-section">
+                            <h3 class="resume-section-title-light">Weaknesses</h3>
+                            <ul class="resume-list" id="preview-weaknesses">
+                                <li class="placeholder-text">Public speaking</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="resume-right">
+                        <div class="resume-section">
+                            <h3 class="resume-section-title">About Me</h3>
+                            <p id="preview-objective" class="placeholder-text">Your career objective will appear here...</p>
+                        </div>
+                        
+                        <div class="resume-section">
+                            <h3 class="resume-section-title">Experience</h3>
+                            <div id="preview-experience">
+                                <p class="placeholder-text">Your work experience will appear here...</p>
+                            </div>
+                        </div>
+                        
+                        <div class="resume-section">
+                            <h3 class="resume-section-title">Education</h3>
+                            <div id="preview-education">
+                                <p class="placeholder-text">Your education details will appear here...</p>
+                            </div>
+                        </div>
+                        
+                        <div class="resume-section">
+                            <h3 class="resume-section-title">Skills</h3>
+                            <ul class="resume-list" id="preview-skills">
+                                <li class="placeholder-text">Your skills will appear here...</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="resume-section">
+                            <h3 class="resume-section-title">Achievements</h3>
+                            <ul class="resume-list" id="preview-achievements">
+                                <li class="placeholder-text">Your achievements will appear here...</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; <span id="current-year"></span> Professional CV Builder By Profix. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        // Initialize document
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Tab switching
+        const tabTriggers = document.querySelectorAll('.tab-trigger');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabTriggers.forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                const tabName = trigger.getAttribute('data-tab');
+                
+                // Update active tab trigger
+                tabTriggers.forEach(t => t.classList.remove('active'));
+                trigger.classList.add('active');
+                
+                // Update active tab content
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.getElementById(`${tabName}-tab`).classList.add('active');
+            });
+        });
+        
+        // Form data
+        const formData = {
+            name: '',
+            email: '',
+            phone: '',
+            address: '',
+            linkedin: '',
+            objective: '',
+            photo: null,
+            education: [{ institution: '', degree: '', year: '' }],
+            experience: [{ company: '', position: '', year: '' }],
+            skills: '',
+            achievements: '',
+            strengths: '',
+            weaknesses: ''
+        };
+        
+        // Form elements
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        const phoneInput = document.getElementById('phone');
+        const addressInput = document.getElementById('address');
+        const linkedinInput = document.getElementById('linkedin');
+        const objectiveInput = document.getElementById('objective');
+        const photoInput = document.getElementById('photo');
+        const skillsInput = document.getElementById('skills');
+        const achievementsInput = document.getElementById('achievements');
+        const strengthsInput = document.getElementById('strengths');
+        const weaknessesInput = document.getElementById('weaknesses');
+        
+        // Preview elements
+        const previewName = document.getElementById('preview-name');
+        const previewEmail = document.getElementById('preview-email');
+        const previewEmailContainer = document.getElementById('preview-email-container');
+        const previewPhone = document.getElementById('preview-phone');
+        const previewPhoneContainer = document.getElementById('preview-phone-container');
+        const previewAddress = document.getElementById('preview-address');
+        const previewAddressContainer = document.getElementById('preview-address-container');
+        const previewLinkedin = document.getElementById('preview-linkedin');
+        const previewLinkedinContainer = document.getElementById('preview-linkedin-container');
+        const previewObjective = document.getElementById('preview-objective');
+        const previewExperience = document.getElementById('preview-experience');
+        const previewEducation = document.getElementById('preview-education');
+        const previewSkills = document.getElementById('preview-skills');
+        const previewAchievements = document.getElementById('preview-achievements');
+        const previewStrengths = document.getElementById('preview-strengths');
+        const previewWeaknesses = document.getElementById('preview-weaknesses');
+        const resumePhoto = document.getElementById('resume-photo');
+        const resumePhotoPlaceholder = document.getElementById('resume-photo-placeholder');
+        
+        // Update preview function
+        function updatePreview() {
+            // Update personal info
+            previewName.textContent = formData.name || 'Your Name';
+            
+            if (formData.email) {
+                previewEmail.textContent = formData.email;
+                previewEmailContainer.style.display = 'flex';
+            } else {
+                previewEmailContainer.style.display = 'none';
+            }
+            
+            if (formData.phone) {
+                previewPhone.textContent = formData.phone;
+                previewPhoneContainer.style.display = 'flex';
+            } else {
+                previewPhoneContainer.style.display = 'none';
+            }
+            
+            if (formData.address) {
+                previewAddress.textContent = formData.address;
+                previewAddressContainer.style.display = 'flex';
+            } else {
+                previewAddressContainer.style.display = 'none';
+            }
+            
+            if (formData.linkedin) {
+                previewLinkedin.textContent = formData.linkedin;
+                previewLinkedinContainer.style.display = 'flex';
+            } else {
+                previewLinkedinContainer.style.display = 'none';
+            }
+            
+            // Update objective
+            if (formData.objective) {
+                previewObjective.textContent = formData.objective;
+                previewObjective.classList.remove('placeholder-text');
+            } else {
+                previewObjective.textContent = 'Your career objective will appear here...';
+                previewObjective.classList.add('placeholder-text');
+            }
+            
+            // Update photo
+            if (formData.photo) {
+                resumePhoto.src = formData.photo;
+                resumePhoto.style.display = 'block';
+                resumePhotoPlaceholder.style.display = 'none';
+            } else {
+                resumePhoto.style.display = 'none';
+                resumePhotoPlaceholder.style.display = 'flex';
+            }
+            
+            // Update lists
+            updateBulletList(previewSkills, formData.skills, 'Your skills will appear here...');
+            updateBulletList(previewAchievements, formData.achievements, 'Your achievements will appear here...');
+            updateBulletList(previewStrengths, formData.strengths, 'Problem solving');
+            updateBulletList(previewWeaknesses, formData.weaknesses, 'Public speaking');
+            
+            // Update education
+            updateEducation();
+            
+            // Update experience
+            updateExperience();
+        }
+        
+        function updateBulletList(element, text, placeholder) {
+            element.innerHTML = '';
+            
+            if (text) {
+                const items = text.split('\n').filter(item => item.trim() !== '');
+                
+                if (items.length > 0) {
+                    items.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item.trim();
+                        element.appendChild(li);
+                    });
+                } else {
+                    const li = document.createElement('li');
+                    li.textContent = placeholder;
+                    li.classList.add('placeholder-text');
+                    element.appendChild(li);
+                }
+            } else {
+                const li = document.createElement('li');
+                li.textContent = placeholder;
+                li.classList.add('placeholder-text');
+                element.appendChild(li);
+            }
+        }
+        
+        function updateEducation() {
+            previewEducation.innerHTML = '';
+            
+            let hasContent = false;
+            
+            formData.education.forEach(edu => {
+                if (edu.institution || edu.degree || edu.year) {
+                    hasContent = true;
+                    const div = document.createElement('div');
+                    div.className = 'resume-entry';
+                    
+                    if (edu.institution) {
+                        const title = document.createElement('div');
+                        title.className = 'resume-entry-title';
+                        title.textContent = edu.institution;
+                        div.appendChild(title);
+                    }
+                    
+                    if (edu.degree || edu.year) {
+                        const subtitle = document.createElement('div');
+                        subtitle.className = 'resume-entry-subtitle';
+                        subtitle.textContent = `${edu.degree} ${edu.year ? `(${edu.year})` : ''}`;
+                        div.appendChild(subtitle);
+                    }
+                    
+                    previewEducation.appendChild(div);
+                }
+            });
+            
+            if (!hasContent) {
+                const p = document.createElement('p');
+                p.textContent = 'Your education details will appear here...';
+                p.classList.add('placeholder-text');
+                previewEducation.appendChild(p);
+            }
+        }
+        
+        function updateExperience() {
+            previewExperience.innerHTML = '';
+            
+            let hasContent = false;
+            
+            formData.experience.forEach(exp => {
+                if (exp.company || exp.position || exp.year) {
+                    hasContent = true;
+                    const div = document.createElement('div');
+                    div.className = 'resume-entry';
+                    
+                    if (exp.position || exp.company) {
+                        const title = document.createElement('div');
+                        title.className = 'resume-entry-title';
+                        title.textContent = `${exp.position} ${exp.company ? `at ${exp.company}` : ''}`;
+                        div.appendChild(title);
+                    }
+                    
+                    if (exp.year) {
+                        const subtitle = document.createElement('div');
+                        subtitle.className = 'resume-entry-subtitle';
+                        subtitle.textContent = `Year: ${exp.year}`;
+                        div.appendChild(subtitle);
+                    }
+                    
+                    previewExperience.appendChild(div);
+                }
+            });
+            
+            if (!hasContent) {
+                const p = document.createElement('p');
+                p.textContent = 'Your work experience will appear here...';
+                p.classList.add('placeholder-text');
+                previewExperience.appendChild(p);
+            }
+        }
+        
+        // Input event listeners
+        nameInput.addEventListener('input', e => {
+            formData.name = e.target.value;
+            updatePreview();
+        });
+        
+        emailInput.addEventListener('input', e => {
+            formData.email = e.target.value;
+            updatePreview();
+        });
+        
+        phoneInput.addEventListener('input', e => {
+            formData.phone = e.target.value;
+            updatePreview();
+        });
+        
+        addressInput.addEventListener('input', e => {
+            formData.address = e.target.value;
+            updatePreview();
+        });
+        
+        linkedinInput.addEventListener('input', e => {
+            formData.linkedin = e.target.value;
+            updatePreview();
+        });
+        
+        objectiveInput.addEventListener('input', e => {
+            formData.objective = e.target.value;
+            updatePreview();
+        });
+        
+        skillsInput.addEventListener('input', e => {
+            formData.skills = e.target.value;
+            updatePreview();
+        });
+        
+        achievementsInput.addEventListener('input', e => {
+            formData.achievements = e.target.value;
+            updatePreview();
+        });
+        
+        strengthsInput.addEventListener('input', e => {
+            formData.strengths = e.target.value;
+            updatePreview();
+        });
+        
+        weaknessesInput.addEventListener('input', e => {
+            formData.weaknesses = e.target.value;
+            updatePreview();
+        });
+        
+        // Photo upload
+        photoInput.addEventListener('change', e => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    formData.photo = e.target.result;
+                    document.getElementById('photo-preview').src = e.target.result;
+                    document.getElementById('photo-preview-container').style.display = 'block';
+                    updatePreview();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Dynamic entries (Education)
+        let educationCount = 1;
+        
+        document.getElementById('add-education').addEventListener('click', () => {
+            educationCount++;
+            formData.education.push({ institution: '', degree: '', year: '' });
+            
+            const container = document.getElementById('education-container');
+            const entry = document.createElement('div');
+            entry.className = 'dynamic-entry';
+            entry.innerHTML = `
+                <button class="btn btn-danger btn-sm btn-icon remove-btn">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24">
+                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"></path>
+                    </svg>
+                </button>
+                <div class="form-group">
+                    <label class="form-label" for="edu-institution-${educationCount - 1}">Institution Name</label>
+                    <input class="form-input" type="text" id="edu-institution-${educationCount - 1}" placeholder="Harvard University">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="edu-degree-${educationCount - 1}">Degree</label>
+                    <input class="form-input" type="text" id="edu-degree-${educationCount - 1}" placeholder="Bachelor of Science in Computer Science">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="edu-year-${educationCount - 1}">Year</label>
+                    <input class="form-input" type="text" id="edu-year-${educationCount - 1}" placeholder="2018-2022">
+                </div>
+            `;
+            container.appendChild(entry);
+            
+            // Show remove buttons if more than one entry
+            if (educationCount > 1) {
+                document.querySelectorAll('#education-container .remove-btn').forEach(btn => {
+                    btn.style.display = 'block';
+                });
+            }
+            
+            // Add event listeners to new inputs
+            const institutionInput = document.getElementById(`edu-institution-${educationCount - 1}`);
+            const degreeInput = document.getElementById(`edu-degree-${educationCount - 1}`);
+            const yearInput = document.getElementById(`edu-year-${educationCount - 1}`);
+            
+            institutionInput.addEventListener('input', e => {
+                formData.education[educationCount - 1].institution = e.target.value;
+                updatePreview();
+            });
+            
+            degreeInput.addEventListener('input', e => {
+                formData.education[educationCount - 1].degree = e.target.value;
+                updatePreview();
+            });
+            
+            yearInput.addEventListener('input', e => {
+                formData.education[educationCount - 1].year = e.target.value;
+                updatePreview();
+            });
+            
+            // Add event listener to remove button
+            entry.querySelector('.remove-btn').addEventListener('click', function() {
+                const index = Array.from(container.children).indexOf(entry);
+                formData.education.splice(index, 1);
+                entry.remove();
+                educationCount--;
+                
+                // Hide remove buttons if only one entry left
+                if (educationCount === 1) {
+                    document.querySelectorAll('#education-container .remove-btn').forEach(btn => {
+                        btn.style.display = 'none';
+                    });
+                }
+                
+                updatePreview();
+            });
+        });
+        
+        // Add event listeners to initial education inputs
+        document.getElementById('edu-institution-0').addEventListener('input', e => {
+            formData.education[0].institution = e.target.value;
+            updatePreview();
+        });
+        
+        document.getElementById('edu-degree-0').addEventListener('input', e => {
+            formData.education[0].degree = e.target.value;
+            updatePreview();
+        });
+        
+        document.getElementById('edu-year-0').addEventListener('input', e => {
+            formData.education[0].year = e.target.value;
+            updatePreview();
+        });
+        
+        // Dynamic entries (Experience)
+        let experienceCount = 1;
+        
+        document.getElementById('add-experience').addEventListener('click', () => {
+            experienceCount++;
+            formData.experience.push({ company: '', position: '', year: '' });
+            
+            const container = document.getElementById('experience-container');
+            const entry = document.createElement('div');
+            entry.className = 'dynamic-entry';
+            entry.innerHTML = `
+                <button class="btn btn-danger btn-sm btn-icon remove-btn">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24">
+                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"></path>
+                    </svg>
+                </button>
+                <div class="form-group">
+                    <label class="form-label" for="exp-company-${experienceCount - 1}">Company Name</label>
+                    <input class="form-input" type="text" id="exp-company-${experienceCount - 1}" placeholder="Google">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="exp-position-${experienceCount - 1}">Position</label>
+                    <input class="form-input" type="text" id="exp-position-${experienceCount - 1}" placeholder="Senior Software Engineer">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="exp-year-${experienceCount - 1}">Year</label>
+                    <input class="form-input" type="text" id="exp-year-${experienceCount - 1}" placeholder="2020-Present">
+                </div>
+            `;
+            container.appendChild(entry);
+            
+            // Show remove buttons if more than one entry
+            if (experienceCount > 1) {
+                document.querySelectorAll('#experience-container .remove-btn').forEach(btn => {
+                    btn.style.display = 'block';
+                });
+            }
+            
+            // Add event listeners to new inputs
+            const companyInput = document.getElementById(`exp-company-${experienceCount - 1}`);
+            const positionInput = document.getElementById(`exp-position-${experienceCount - 1}`);
+            const yearInput = document.getElementById(`exp-year-${experienceCount - 1}`);
+            
+            companyInput.addEventListener('input', e => {
+                formData.experience[experienceCount - 1].company = e.target.value;
+                updatePreview();
+            });
+            
+            positionInput.addEventListener('input', e => {
+                formData.experience[experienceCount - 1].position = e.target.value;
+                updatePreview();
+            });
+            
+            yearInput.addEventListener('input', e => {
+                formData.experience[experienceCount - 1].year = e.target.value;
+                updatePreview();
+            });
+            
+            // Add event listener to remove button
+            entry.querySelector('.remove-btn').addEventListener('click', function() {
+                const index = Array.from(container.children).indexOf(entry);
+                formData.experience.splice(index, 1);
+                entry.remove();
+                experienceCount--;
+                
+                // Hide remove buttons if only one entry left
+                if (experienceCount === 1) {
+                    document.querySelectorAll('#experience-container .remove-btn').forEach(btn => {
+                        btn.style.display = 'none';
+                    });
+                }
+                
+                updatePreview();
+            });
+        });
+        
+        // Add event listeners to initial experience inputs
+        document.getElementById('exp-company-0').addEventListener('input', e => {
+            formData.experience[0].company = e.target.value;
+            updatePreview();
+        });
+        
+        document.getElementById('exp-position-0').addEventListener('input', e => {
+            formData.experience[0].position = e.target.value;
+            updatePreview();
+        });
+        
+        document.getElementById('exp-year-0').addEventListener('input', e => {
+            formData.experience[0].year = e.target.value;
+            updatePreview();
+        });
+        
+        // Export functions
+        document.getElementById('export-pdf').addEventListener('click', exportToPDF);
+        document.getElementById('export-docx').addEventListener('click', exportToDOCX);
+        document.getElementById('export-png').addEventListener('click', exportToPNG);
+        
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const resume = document.getElementById('resume');
+            
+            html2canvas(resume, {
+                scale: 2,
+                useCORS: true,
+                logging: false
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+                
+                const imgWidth = 210;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                
+                let heightLeft = imgHeight;
+                let position = 0;
+                const pageHeight = 295; // A4 height in mm
+                
+                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+                
+                while (heightLeft > 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+                
+                pdf.save('resume.pdf');
+            });
+        }
+        
+        function exportToDOCX() {
+            const { Document, Paragraph, TextRun, HeadingLevel, AlignmentType } = docx;
+            
+            // Create bullet lists
+            function createBulletList(text) {
+                if (!text) return [];
+                return text
+                    .split('\n')
+                    .filter(item => item.trim() !== '')
+                    .map(item => new Paragraph({
+                        text: '• ' + item.trim()
+                    }));
+            }
+            
+            // Create a new Document
+            const doc = new Document({
+                sections: [{
+                    properties: {},
+                    children: [
+                        new Paragraph({
+                            text: formData.name || 'Your Name',
+                            heading: HeadingLevel.HEADING_1,
+                            alignment: AlignmentType.CENTER
+                        }),
+                        new Paragraph({
+                            children: [
+                                new TextRun({ text: 'Email: ', bold: true }),
+                                new TextRun(formData.email || '')
+                            ]
+                        }),
+                        new Paragraph({
+                            children: [
+                                new TextRun({ text: 'Phone: ', bold: true }),
+                                new TextRun(formData.phone || '')
+                            ]
+                        }),
+                        new Paragraph({
+                            children: [
+                                new TextRun({ text: 'Address: ', bold: true }),
+                                new TextRun(formData.address || '')
+                            ]
+                        }),
+                        new Paragraph({
+                            children: [
+                                new TextRun({ text: 'LinkedIn: ', bold: true }),
+                                new TextRun(formData.linkedin || '')
+                            ],
+                            spacing: { after: 200 }
+                        }),
+                        new Paragraph({
+                            text: 'About Me',
+                            heading: HeadingLevel.HEADING_2,
+                            thematicBreak: true
+                        }),
+                        new Paragraph({
+                            text: formData.objective || '',
+                            spacing: { after: 200 }
+                        }),
+                        new Paragraph({
+                            text: 'Experience',
+                            heading: HeadingLevel.HEADING_2,
+                            thematicBreak: true
+                        }),
+                        ...formData.experience.flatMap(exp => [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({ 
+                                        text: `${exp.position || ''} ${exp.company ? 'at ' + exp.company : ''}`.trim(),
+                                        bold: true 
+                                    })
+                                ]
+                            }),
+                            new Paragraph({
+                                text: exp.year ? 'Year: ' + exp.year : '',
+                                spacing: { after: 200 }
+                            })
+                        ]),
+                        new Paragraph({
+                            text: 'Education',
+                            heading: HeadingLevel.HEADING_2,
+                            thematicBreak: true
+                        }),
+                        ...formData.education.flatMap(edu => [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({ 
+                                        text: edu.institution || '',
+                                        bold: true 
+                                    })
+                                ]
+                            }),
+                            new Paragraph({
+                                text: `${edu.degree || ''} ${edu.year ? '(' + edu.year + ')' : ''}`.trim(),
+                                spacing: { after: 200 }
+                            })
+                        ]),
+                        new Paragraph({
+                            text: 'Skills',
+                            heading: HeadingLevel.HEADING_2,
+                            thematicBreak: true
+                        }),
+                        ...createBulletList(formData.skills),
+                        new Paragraph({ spacing: { after: 200 } }),
+                        new Paragraph({
+                            text: 'Achievements',
+                            heading: HeadingLevel.HEADING_2,
+                            thematicBreak: true
+                        }),
+                        ...createBulletList(formData.achievements),
+                        new Paragraph({ spacing: { after: 200 } }),
+                        new Paragraph({
+                            text: 'Strengths',
+                            heading: HeadingLevel.HEADING_2,
+                            thematicBreak: true
+                        }),
+                        ...createBulletList(formData.strengths),
+                        new Paragraph({ spacing: { after: 200 } }),
+                        new Paragraph({
+                            text: 'Weaknesses',
+                            heading: HeadingLevel.HEADING_2,
+                            thematicBreak: true
+                        }),
+                        ...createBulletList(formData.weaknesses)
+                    ]
+                }]
+            });
+            
+            // Generate and save the document
+            docx.Packer.toBlob(doc).then(blob => {
+                saveAs(blob, 'resume.docx');
+            });
+        }
+        
+        function exportToPNG() {
+            const resume = document.getElementById('resume');
+            
+            html2canvas(resume, {
+                scale: 2,
+                useCORS: true,
+                logging: false
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'resume.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+        
+        // Initialize preview
+        updatePreview();
+    </script>
+</body>
+</html>
