@@ -1537,415 +1537,533 @@ Perfectionism"></textarea>
     <!--Script Theme Editor-->
     <!-- Add this just before the closing </body> tag in your HTML file -->
 <script>
-  // CV Theme Editor
-  document.addEventListener('DOMContentLoaded', function() {
-    // 1. Add a new tab for the theme editor
-    const tabList = document.querySelector('.tab-list');
-    if (tabList) {
-      // Make the tab list 3 columns instead of 2
+  // Wait for the page to fully load
+  window.addEventListener('load', function() {
+    console.log("Theme editor script is running...");
+    
+    // Function to add the theme editor tab
+    function addThemeEditorTab() {
+      // Find the tab list
+      const tabList = document.querySelector('.tab-list');
+      if (!tabList) {
+        console.error("Could not find .tab-list element");
+        return;
+      }
+      
+      console.log("Found tab list:", tabList);
+      
+      // Check if theme editor tab already exists
+      if (document.getElementById('theme-editor-tab')) {
+        console.log("Theme editor tab already exists");
+        return;
+      }
+      
+      // Make the tab list 3 columns
       tabList.style.gridTemplateColumns = '1fr 1fr 1fr';
       
       // Create the theme editor tab button
       const themeButton = document.createElement('div');
       themeButton.className = 'tab-trigger';
+      themeButton.id = 'theme-editor-tab';
       themeButton.setAttribute('data-tab', 'theme');
       themeButton.textContent = 'Theme Editor';
       tabList.appendChild(themeButton);
       
-      // Add tab switching functionality
-      themeButton.addEventListener('click', function() {
-        // Update active tab trigger
-        document.querySelectorAll('.tab-trigger').forEach(t => t.classList.remove('active'));
-        themeButton.classList.add('active');
-        
-        // Update active tab content
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-        document.getElementById('theme-tab').classList.add('active');
-      });
+      console.log("Theme editor tab button created:", themeButton);
       
       // Create the theme editor tab content
       const container = document.querySelector('.container');
-      if (container) {
-        const themeTab = document.createElement('div');
-        themeTab.className = 'tab-content';
-        themeTab.id = 'theme-tab';
-        container.appendChild(themeTab);
-        
-        // Add the theme editor UI
-        themeTab.innerHTML = `
-          <div class="card">
-            <div class="card-title">
-              <svg class="icon icon-md card-title-icon" viewBox="0 0 24 24">
-                <path d="M12 22C6.49 22 2 17.51 2 12S6.49 2 12 2s10 4.04 10 9c0 3.31-2.69 6-6 6h-1.77c-.28 0-.5.22-.5.5 0 .12.05.23.13.33.41.47.64 1.06.64 1.67A2.5 2.5 0 0 1 12 22zm0-18c-4.41 0-8 3.59-8 8s3.59 8 8 8c.28 0 .5-.22.5-.5a.54.54 0 0 0-.14-.35c-.41-.46-.63-1.05-.63-1.65a2.5 2.5 0 0 1 2.5-2.5H16c2.21 0 4-1.79 4-4 0-3.86-3.59-7-8-7z"></path>
-                <circle cx="6.5" cy="11.5" r="1.5"></circle>
-                <circle cx="9.5" cy="7.5" r="1.5"></circle>
-                <circle cx="14.5" cy="7.5" r="1.5"></circle>
-                <circle cx="17.5" cy="11.5" r="1.5"></circle>
-              </svg>
-              <h2>CV Theme Editor</h2>
-            </div>
-            
-            <div class="form-group">
-              <label class="form-label">Primary Color</label>
-              <div style="display: flex; gap: 10px; align-items: center;">
-                <input type="color" id="primary-color" value="#9333ea" class="form-input" style="width: 50px; padding: 2px;">
-                <input type="text" id="primary-color-text" value="#9333ea" class="form-input">
-              </div>
-            </div>
-            
-            <div class="form-group">
-              <label class="form-label">Secondary Color</label>
-              <div style="display: flex; gap: 10px; align-items: center;">
-                <input type="color" id="secondary-color" value="#3b82f6" class="form-input" style="width: 50px; padding: 2px;">
-                <input type="text" id="secondary-color-text" value="#3b82f6" class="form-input">
-              </div>
-            </div>
-            
-            <div class="form-group">
-              <label class="form-label">Sidebar Position</label>
-              <select id="sidebar-position" class="form-input">
-                <option value="left">Left</option>
-                <option value="right">Right</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label class="form-label">Sidebar Width (mm)</label>
-              <input type="range" id="sidebar-width" min="50" max="100" value="70" class="form-input">
-              <output id="sidebar-width-value">70</output>
-            </div>
-            
-            <div class="form-group">
-              <label class="form-label">Photo Size (mm)</label>
-              <input type="range" id="photo-size" min="30" max="60" value="40" class="form-input">
-              <output id="photo-size-value">40</output>
-            </div>
-            
-            <div class="form-group">
-              <label class="form-label">Show Photo</label>
-              <div style="display: flex; align-items: center; gap: 10px;">
-                <input type="checkbox" id="show-photo" checked class="form-input" style="width: auto;">
-                <label for="show-photo" style="margin: 0;">Display profile photo</label>
-              </div>
-            </div>
-            
-            <div class="form-group">
-              <label class="form-label">Color Presets</label>
-              <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px;">
-                <button class="btn btn-outline" data-preset="default">Default</button>
-                <button class="btn btn-outline" data-preset="professional">Professional</button>
-                <button class="btn btn-outline" data-preset="creative">Creative</button>
-                <button class="btn btn-outline" data-preset="minimal">Minimal</button>
-                <button class="btn btn-outline" data-preset="bold">Bold</button>
-              </div>
-            </div>
-            
-            <div style="margin-top: 20px; display: flex; justify-content: space-between;">
-              <button id="reset-theme" class="btn btn-outline">Reset Theme</button>
-              <button id="save-theme" class="btn btn-primary">Save Theme</button>
-            </div>
-            
-            <div id="saved-themes-container" class="saved-themes" style="display: none; margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
-              <label class="form-label">Saved Themes</label>
-              <div id="saved-themes-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 10px;"></div>
+      if (!container) {
+        console.error("Could not find .container element");
+        return;
+      }
+      
+      // Check if theme tab content already exists
+      if (document.getElementById('theme-tab')) {
+        console.log("Theme tab content already exists");
+        return;
+      }
+      
+      const themeTab = document.createElement('div');
+      themeTab.className = 'tab-content';
+      themeTab.id = 'theme-tab';
+      container.appendChild(themeTab);
+      
+      console.log("Theme tab content created:", themeTab);
+      
+      // Add the theme editor UI
+      themeTab.innerHTML = `
+        <div class="card">
+          <div class="card-title">
+            <svg class="icon icon-md card-title-icon" viewBox="0 0 24 24">
+              <path d="M12 22C6.49 22 2 17.51 2 12S6.49 2 12 2s10 4.04 10 9c0 3.31-2.69 6-6 6h-1.77c-.28 0-.5.22-.5.5 0 .12.05.23.13.33.41.47.64 1.06.64 1.67A2.5 2.5 0 0 1 12 22zm0-18c-4.41 0-8 3.59-8 8s3.59 8 8 8c.28 0 .5-.22.5-.5a.54.54 0 0 0-.14-.35c-.41-.46-.63-1.05-.63-1.65a2.5 2.5 0 0 1 2.5-2.5H16c2.21 0 4-1.79 4-4 0-3.86-3.59-7-8-7z"></path>
+              <circle cx="6.5" cy="11.5" r="1.5"></circle>
+              <circle cx="9.5" cy="7.5" r="1.5"></circle>
+              <circle cx="14.5" cy="7.5" r="1.5"></circle>
+              <circle cx="17.5" cy="11.5" r="1.5"></circle>
+            </svg>
+            <h2>CV Theme Editor</h2>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Primary Color</label>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <input type="color" id="primary-color" value="#9333ea" class="form-input" style="width: 50px; padding: 2px;">
+              <input type="text" id="primary-color-text" value="#9333ea" class="form-input">
             </div>
           </div>
-        `;
+          
+          <div class="form-group">
+            <label class="form-label">Secondary Color</label>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <input type="color" id="secondary-color" value="#3b82f6" class="form-input" style="width: 50px; padding: 2px;">
+              <input type="text" id="secondary-color-text" value="#3b82f6" class="form-input">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Sidebar Position</label>
+            <select id="sidebar-position" class="form-input">
+              <option value="left">Left</option>
+              <option value="right">Right</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Sidebar Width (mm)</label>
+            <input type="range" id="sidebar-width" min="50" max="100" value="70" class="form-input">
+            <output id="sidebar-width-value">70</output>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Photo Size (mm)</label>
+            <input type="range" id="photo-size" min="30" max="60" value="40" class="form-input">
+            <output id="photo-size-value">40</output>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Show Photo</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <input type="checkbox" id="show-photo" checked class="form-input" style="width: auto;">
+              <label for="show-photo" style="margin: 0;">Display profile photo</label>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Color Presets</label>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px;">
+              <button class="btn btn-outline" data-preset="default">Default</button>
+              <button class="btn btn-outline" data-preset="professional">Professional</button>
+              <button class="btn btn-outline" data-preset="creative">Creative</button>
+              <button class="btn btn-outline" data-preset="minimal">Minimal</button>
+              <button class="btn btn-outline" data-preset="bold">Bold</button>
+            </div>
+          </div>
+          
+          <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+            <button id="reset-theme" class="btn btn-outline">Reset Theme</button>
+            <button id="save-theme" class="btn btn-primary">Save Theme</button>
+          </div>
+          
+          <div id="saved-themes-container" class="saved-themes" style="display: none; margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
+            <label class="form-label">Saved Themes</label>
+            <div id="saved-themes-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 10px;"></div>
+          </div>
+        </div>
+      `;
+      
+      // Add CSS for the theme editor
+      const style = document.createElement('style');
+      style.textContent = `
+        #theme-tab output {
+          display: inline-block;
+          margin-left: 10px;
+        }
         
-        // Add CSS for the theme editor
-        const style = document.createElement('style');
-        style.textContent = `
-          #theme-tab output {
-            display: inline-block;
-            margin-left: 10px;
-          }
-          
-          .theme-preview {
-            border: 1px solid #e2e8f0;
-            border-radius: 0.25rem;
-            padding: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-          }
-          
-          .theme-preview:hover {
-            border-color: #9333ea;
-            box-shadow: 0 0 0 2px rgba(147, 51, 234, 0.2);
-          }
-          
-          .theme-colors {
-            display: flex;
-            height: 20px;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 8px;
-          }
-          
-          .theme-name {
-            font-size: 0.875rem;
-            font-weight: 500;
-          }
-          
-          #theme-success-message {
-            color: #10b981;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            margin-top: 10px;
-            font-size: 0.875rem;
-          }
-        `;
-        document.head.appendChild(style);
+        .theme-preview {
+          border: 1px solid #e2e8f0;
+          border-radius: 0.25rem;
+          padding: 10px;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
         
-        // Add event listeners and functionality
-        setTimeout(() => {
-          // Get all the form elements
-          const primaryColor = document.getElementById('primary-color');
-          const primaryColorText = document.getElementById('primary-color-text');
-          const secondaryColor = document.getElementById('secondary-color');
-          const secondaryColorText = document.getElementById('secondary-color-text');
-          const sidebarPosition = document.getElementById('sidebar-position');
-          const sidebarWidth = document.getElementById('sidebar-width');
-          const sidebarWidthValue = document.getElementById('sidebar-width-value');
-          const photoSize = document.getElementById('photo-size');
-          const photoSizeValue = document.getElementById('photo-size-value');
-          const showPhoto = document.getElementById('show-photo');
-          const resetTheme = document.getElementById('reset-theme');
-          const saveTheme = document.getElementById('save-theme');
-          const savedThemesContainer = document.getElementById('saved-themes-container');
-          const savedThemesList = document.getElementById('saved-themes-list');
+        .theme-preview:hover {
+          border-color: #9333ea;
+          box-shadow: 0 0 0 2px rgba(147, 51, 234, 0.2);
+        }
+        
+        .theme-colors {
+          display: flex;
+          height: 20px;
+          border-radius: 4px;
+          overflow: hidden;
+          margin-bottom: 8px;
+        }
+        
+        .theme-name {
+          font-size: 0.875rem;
+          font-weight: 500;
+        }
+        
+        #theme-success-message {
+          color: #10b981;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          margin-top: 10px;
+          font-size: 0.875rem;
+        }
+      `;
+      document.head.appendChild(style);
+      
+      console.log("Theme editor UI and styles added");
+      
+      // Setup tab switching for the theme editor tab
+      setupTabSwitching();
+      
+      // Setup theme editor functionality
+      setupThemeEditor();
+    }
+    
+    // Function to setup tab switching
+    function setupTabSwitching() {
+      const themeButton = document.getElementById('theme-editor-tab');
+      if (!themeButton) {
+        console.error("Could not find theme editor tab button");
+        return;
+      }
+      
+      // Add click event to the theme editor tab
+      themeButton.addEventListener('click', function() {
+        console.log("Theme editor tab clicked");
+        
+        // Update active tab trigger
+        document.querySelectorAll('.tab-trigger').forEach(t => {
+          t.classList.remove('active');
+          console.log("Removed active class from", t);
+        });
+        themeButton.classList.add('active');
+        console.log("Added active class to theme button");
+        
+        // Update active tab content
+        document.querySelectorAll('.tab-content').forEach(content => {
+          content.classList.remove('active');
+          console.log("Removed active class from", content);
+        });
+        const themeTab = document.getElementById('theme-tab');
+        if (themeTab) {
+          themeTab.classList.add('active');
+          console.log("Added active class to theme tab");
+        }
+      });
+      
+      console.log("Tab switching setup complete");
+    }
+    
+    // Function to setup theme editor functionality
+    function setupThemeEditor() {
+      setTimeout(() => {
+        console.log("Setting up theme editor functionality");
+        
+        // Get all the form elements
+        const primaryColor = document.getElementById('primary-color');
+        const primaryColorText = document.getElementById('primary-color-text');
+        const secondaryColor = document.getElementById('secondary-color');
+        const secondaryColorText = document.getElementById('secondary-color-text');
+        const sidebarPosition = document.getElementById('sidebar-position');
+        const sidebarWidth = document.getElementById('sidebar-width');
+        const sidebarWidthValue = document.getElementById('sidebar-width-value');
+        const photoSize = document.getElementById('photo-size');
+        const photoSizeValue = document.getElementById('photo-size-value');
+        const showPhoto = document.getElementById('show-photo');
+        const resetTheme = document.getElementById('reset-theme');
+        const saveTheme = document.getElementById('save-theme');
+        const savedThemesContainer = document.getElementById('saved-themes-container');
+        const savedThemesList = document.getElementById('saved-themes-list');
+        
+        if (!primaryColor || !secondaryColor) {
+          console.error("Could not find theme editor form elements");
+          return;
+        }
+        
+        console.log("Found all theme editor form elements");
+        
+        // Function to update the theme
+        function updateTheme() {
+          console.log("Updating theme");
           
-          // Function to update the theme
-          function updateTheme() {
-            const resumeLeft = document.querySelector('.resume-left');
-            const resumeRight = document.querySelector('.resume-right');
-            const resumeSectionTitles = document.querySelectorAll('.resume-section-title');
-            const resumePhoto = document.querySelector('.resume-photo');
-            const resumePhotoPlaceholder = document.querySelector('.resume-photo-placeholder');
+          const resumeLeft = document.querySelector('.resume-left');
+          const resumeRight = document.querySelector('.resume-right');
+          const resumeSectionTitles = document.querySelectorAll('.resume-section-title');
+          const resumePhoto = document.querySelector('.resume-photo');
+          const resumePhotoPlaceholder = document.querySelector('.resume-photo-placeholder');
+          
+          if (!resumeLeft || !resumeRight) {
+            console.error("Could not find resume elements");
+            return;
+          }
+          
+          console.log("Found resume elements, applying theme");
+          
+          // Apply colors
+          resumeLeft.style.background = `linear-gradient(to bottom, ${primaryColor.value}, ${secondaryColor.value})`;
+          resumeSectionTitles.forEach(title => {
+            title.style.color = primaryColor.value;
+          });
+          
+          // Apply layout
+          if (sidebarPosition.value === "left") {
+            resumeLeft.style.width = `${sidebarWidth.value}mm`;
+            resumeRight.style.width = `${210 - sidebarWidth.value}mm`;
             
-            if (!resumeLeft || !resumeRight) return;
-            
-            // Apply colors
-            resumeLeft.style.background = `linear-gradient(to bottom, ${primaryColor.value}, ${secondaryColor.value})`;
-            resumeSectionTitles.forEach(title => {
-              title.style.color = primaryColor.value;
-            });
-            
-            // Apply layout
-            if (sidebarPosition.value === "left") {
-              resumeLeft.style.width = `${sidebarWidth.value}mm`;
-              resumeRight.style.width = `${210 - sidebarWidth.value}mm`;
-              
-              // Reorder if needed
-              const resume = document.querySelector('.resume');
-              if (resumeLeft.nextElementSibling !== resumeRight) {
-                resume.appendChild(resumeLeft);
-                resume.insertBefore(resumeRight, resumeLeft);
-              }
-            } else {
-              resumeLeft.style.width = `${sidebarWidth.value}mm`;
-              resumeRight.style.width = `${210 - sidebarWidth.value}mm`;
-              
-              // Reorder if needed
-              const resume = document.querySelector('.resume');
-              if (resumeRight.nextElementSibling !== resumeLeft) {
-                resume.appendChild(resumeRight);
-                resume.insertBefore(resumeLeft, resumeRight);
-              }
+            // Reorder if needed
+            const resume = document.querySelector('.resume');
+            if (resumeLeft.nextElementSibling !== resumeRight) {
+              resume.appendChild(resumeLeft);
+              resume.insertBefore(resumeRight, resumeLeft);
             }
+          } else {
+            resumeLeft.style.width = `${sidebarWidth.value}mm`;
+            resumeRight.style.width = `${210 - sidebarWidth.value}mm`;
             
-            // Apply photo size
-            if (resumePhoto) {
-              resumePhoto.style.width = `${photoSize.value}mm`;
-              resumePhoto.style.height = `${photoSize.value}mm`;
-            }
-            
-            if (resumePhotoPlaceholder) {
-              resumePhotoPlaceholder.style.width = `${photoSize.value}mm`;
-              resumePhotoPlaceholder.style.height = `${photoSize.value}mm`;
-            }
-            
-            // Apply photo visibility
-            if (resumePhoto) {
-              resumePhoto.style.display = showPhoto.checked ? 'block' : 'none';
-            }
-            
-            if (resumePhotoPlaceholder) {
-              resumePhotoPlaceholder.style.display = showPhoto.checked ? 'flex' : 'none';
+            // Reorder if needed
+            const resume = document.querySelector('.resume');
+            if (resumeRight.nextElementSibling !== resumeLeft) {
+              resume.appendChild(resumeRight);
+              resume.insertBefore(resumeLeft, resumeRight);
             }
           }
           
-          // Color presets
-          const presets = {
-            default: { primary: '#9333ea', secondary: '#3b82f6' },
-            professional: { primary: '#0f172a', secondary: '#334155' },
-            creative: { primary: '#ec4899', secondary: '#8b5cf6' },
-            minimal: { primary: '#525252', secondary: '#737373' },
-            bold: { primary: '#dc2626', secondary: '#ea580c' }
+          // Apply photo size
+          if (resumePhoto) {
+            resumePhoto.style.width = `${photoSize.value}mm`;
+            resumePhoto.style.height = `${photoSize.value}mm`;
+          }
+          
+          if (resumePhotoPlaceholder) {
+            resumePhotoPlaceholder.style.width = `${photoSize.value}mm`;
+            resumePhotoPlaceholder.style.height = `${photoSize.value}mm`;
+          }
+          
+          // Apply photo visibility
+          if (resumePhoto) {
+            resumePhoto.style.display = showPhoto.checked ? 'block' : 'none';
+          }
+          
+          if (resumePhotoPlaceholder) {
+            resumePhotoPlaceholder.style.display = showPhoto.checked ? 'flex' : 'none';
+          }
+          
+          console.log("Theme updated successfully");
+        }
+        
+        // Color presets
+        const presets = {
+          default: { primary: '#9333ea', secondary: '#3b82f6' },
+          professional: { primary: '#0f172a', secondary: '#334155' },
+          creative: { primary: '#ec4899', secondary: '#8b5cf6' },
+          minimal: { primary: '#525252', secondary: '#737373' },
+          bold: { primary: '#dc2626', secondary: '#ea580c' }
+        };
+        
+        // Apply preset colors
+        document.querySelectorAll('[data-preset]').forEach(button => {
+          button.addEventListener('click', () => {
+            console.log("Color preset clicked:", button.dataset.preset);
+            const preset = presets[button.dataset.preset];
+            if (preset) {
+              primaryColor.value = preset.primary;
+              primaryColorText.value = preset.primary;
+              secondaryColor.value = preset.secondary;
+              secondaryColorText.value = preset.secondary;
+              updateTheme();
+            }
+          });
+        });
+        
+        // Event listeners for form controls
+        primaryColor.addEventListener('input', () => {
+          primaryColorText.value = primaryColor.value;
+          updateTheme();
+        });
+        
+        primaryColorText.addEventListener('input', () => {
+          primaryColor.value = primaryColorText.value;
+          updateTheme();
+        });
+        
+        secondaryColor.addEventListener('input', () => {
+          secondaryColorText.value = secondaryColor.value;
+          updateTheme();
+        });
+        
+        secondaryColorText.addEventListener('input', () => {
+          secondaryColor.value = secondaryColorText.value;
+          updateTheme();
+        });
+        
+        sidebarPosition.addEventListener('change', updateTheme);
+        
+        sidebarWidth.addEventListener('input', () => {
+          sidebarWidthValue.textContent = sidebarWidth.value;
+          updateTheme();
+        });
+        
+        photoSize.addEventListener('input', () => {
+          photoSizeValue.textContent = photoSize.value;
+          updateTheme();
+        });
+        
+        showPhoto.addEventListener('change', updateTheme);
+        
+        // Reset theme to defaults
+        resetTheme.addEventListener('click', () => {
+          console.log("Resetting theme to defaults");
+          primaryColor.value = '#9333ea';
+          primaryColorText.value = '#9333ea';
+          secondaryColor.value = '#3b82f6';
+          secondaryColorText.value = '#3b82f6';
+          sidebarPosition.value = 'left';
+          sidebarWidth.value = 70;
+          sidebarWidthValue.textContent = 70;
+          photoSize.value = 40;
+          photoSizeValue.textContent = 40;
+          showPhoto.checked = true;
+          updateTheme();
+        });
+        
+        // Save theme
+        saveTheme.addEventListener('click', () => {
+          console.log("Saving theme");
+          const themeName = prompt('Enter a name for this theme:');
+          if (!themeName) return;
+          
+          const theme = {
+            name: themeName,
+            colors: {
+              primary: primaryColor.value,
+              secondary: secondaryColor.value
+            },
+            layout: {
+              sidebarPosition: sidebarPosition.value,
+              sidebarWidth: parseInt(sidebarWidth.value),
+              photoSize: parseInt(photoSize.value),
+              showPhoto: showPhoto.checked
+            }
           };
           
-          // Apply preset colors
-          document.querySelectorAll('[data-preset]').forEach(button => {
-            button.addEventListener('click', () => {
-              const preset = presets[button.dataset.preset];
-              if (preset) {
-                primaryColor.value = preset.primary;
-                primaryColorText.value = preset.primary;
-                secondaryColor.value = preset.secondary;
-                secondaryColorText.value = preset.secondary;
-                updateTheme();
-              }
-            });
-          });
+          // Save to localStorage
+          let savedThemes = JSON.parse(localStorage.getItem('savedCVThemes') || '[]');
+          savedThemes.push(theme);
+          localStorage.setItem('savedCVThemes', JSON.stringify(savedThemes));
+          console.log("Theme saved to localStorage");
           
-          // Event listeners for form controls
-          primaryColor.addEventListener('input', () => {
-            primaryColorText.value = primaryColor.value;
-            updateTheme();
-          });
+          // Show success message
+          const successMessage = document.createElement('div');
+          successMessage.id = 'theme-success-message';
+          successMessage.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            Theme saved successfully!
+          `;
           
-          primaryColorText.addEventListener('input', () => {
-            primaryColor.value = primaryColorText.value;
-            updateTheme();
-          });
-          
-          secondaryColor.addEventListener('input', () => {
-            secondaryColorText.value = secondaryColor.value;
-            updateTheme();
-          });
-          
-          secondaryColorText.addEventListener('input', () => {
-            secondaryColor.value = secondaryColorText.value;
-            updateTheme();
-          });
-          
-          sidebarPosition.addEventListener('change', updateTheme);
-          
-          sidebarWidth.addEventListener('input', () => {
-            sidebarWidthValue.textContent = sidebarWidth.value;
-            updateTheme();
-          });
-          
-          photoSize.addEventListener('input', () => {
-            photoSizeValue.textContent = photoSize.value;
-            updateTheme();
-          });
-          
-          showPhoto.addEventListener('change', updateTheme);
-          
-          // Reset theme to defaults
-          resetTheme.addEventListener('click', () => {
-            primaryColor.value = '#9333ea';
-            primaryColorText.value = '#9333ea';
-            secondaryColor.value = '#3b82f6';
-            secondaryColorText.value = '#3b82f6';
-            sidebarPosition.value = 'left';
-            sidebarWidth.value = 70;
-            sidebarWidthValue.textContent = 70;
-            photoSize.value = 40;
-            photoSizeValue.textContent = 40;
-            showPhoto.checked = true;
-            updateTheme();
-          });
-          
-          // Save theme
-          saveTheme.addEventListener('click', () => {
-            const themeName = prompt('Enter a name for this theme:');
-            if (!themeName) return;
-            
-            const theme = {
-              name: themeName,
-              colors: {
-                primary: primaryColor.value,
-                secondary: secondaryColor.value
-              },
-              layout: {
-                sidebarPosition: sidebarPosition.value,
-                sidebarWidth: parseInt(sidebarWidth.value),
-                photoSize: parseInt(photoSize.value),
-                showPhoto: showPhoto.checked
-              }
-            };
-            
-            // Save to localStorage
-            let savedThemes = JSON.parse(localStorage.getItem('savedCVThemes') || '[]');
-            savedThemes.push(theme);
-            localStorage.setItem('savedCVThemes', JSON.stringify(savedThemes));
-            
-            // Show success message
-            const successMessage = document.createElement('div');
-            successMessage.id = 'theme-success-message';
-            successMessage.innerHTML = `
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-              </svg>
-              Theme saved successfully!
-            `;
-            
-            // Remove any existing success message
-            const existingMessage = document.getElementById('theme-success-message');
-            if (existingMessage) {
-              existingMessage.remove();
-            }
-            
-            // Add the success message
-            saveTheme.parentNode.appendChild(successMessage);
-            
-            // Remove after 3 seconds
-            setTimeout(() => {
-              successMessage.remove();
-            }, 3000);
-            
-            // Update saved themes list
-            updateSavedThemesList();
-          });
-          
-          // Function to update the saved themes list
-          function updateSavedThemesList() {
-            const savedThemes = JSON.parse(localStorage.getItem('savedCVThemes') || '[]');
-            
-            if (savedThemes.length > 0) {
-              savedThemesContainer.style.display = 'block';
-              savedThemesList.innerHTML = '';
-              
-              savedThemes.forEach((theme, index) => {
-                const themeEl = document.createElement('div');
-                themeEl.className = 'theme-preview';
-                themeEl.innerHTML = `
-                  <div class="theme-colors">
-                    <div style="width: 50%; background-color: ${theme.colors.primary}"></div>
-                    <div style="width: 50%; background-color: ${theme.colors.secondary}"></div>
-                  </div>
-                  <div class="theme-name">${theme.name}</div>
-                `;
-                
-                themeEl.addEventListener('click', () => {
-                  // Apply this theme
-                  primaryColor.value = theme.colors.primary;
-                  primaryColorText.value = theme.colors.primary;
-                  secondaryColor.value = theme.colors.secondary;
-                  secondaryColorText.value = theme.colors.secondary;
-                  sidebarPosition.value = theme.layout.sidebarPosition;
-                  sidebarWidth.value = theme.layout.sidebarWidth;
-                  sidebarWidthValue.textContent = theme.layout.sidebarWidth;
-                  photoSize.value = theme.layout.photoSize;
-                  photoSizeValue.textContent = theme.layout.photoSize;
-                  showPhoto.checked = theme.layout.showPhoto;
-                  updateTheme();
-                });
-                
-                savedThemesList.appendChild(themeEl);
-              });
-            } else {
-              savedThemesContainer.style.display = 'none';
-            }
+          // Remove any existing success message
+          const existingMessage = document.getElementById('theme-success-message');
+          if (existingMessage) {
+            existingMessage.remove();
           }
           
-          // Initialize saved themes list
+          // Add the success message
+          saveTheme.parentNode.appendChild(successMessage);
+          
+          // Remove after 3 seconds
+          setTimeout(() => {
+            successMessage.remove();
+          }, 3000);
+          
+          // Update saved themes list
           updateSavedThemesList();
-        }, 100);
+        });
+        
+        // Function to update the saved themes list
+        function updateSavedThemesList() {
+          console.log("Updating saved themes list");
+          const savedThemes = JSON.parse(localStorage.getItem('savedCVThemes') || '[]');
+          
+          if (savedThemes.length > 0) {
+            savedThemesContainer.style.display = 'block';
+            savedThemesList.innerHTML = '';
+            
+            savedThemes.forEach((theme, index) => {
+              const themeEl = document.createElement('div');
+              themeEl.className = 'theme-preview';
+              themeEl.innerHTML = `
+                <div class="theme-colors">
+                  <div style="width: 50%; background-color: ${theme.colors.primary}"></div>
+                  <div style="width: 50%; background-color: ${theme.colors.secondary}"></div>
+                </div>
+                <div class="theme-name">${theme.name}</div>
+              `;
+              
+              themeEl.addEventListener('click', () => {
+                console.log("Applying saved theme:", theme.name);
+                // Apply this theme
+                primaryColor.value = theme.colors.primary;
+                primaryColorText.value = theme.colors.primary;
+                secondaryColor.value = theme.colors.secondary;
+                secondaryColorText.value = theme.colors.secondary;
+                sidebarPosition.value = theme.layout.sidebarPosition;
+                sidebarWidth.value = theme.layout.sidebarWidth;
+                sidebarWidthValue.textContent = theme.layout.sidebarWidth;
+                photoSize.value = theme.layout.photoSize;
+                photoSizeValue.textContent = theme.layout.photoSize;
+                showPhoto.checked = theme.layout.showPhoto;
+                updateTheme();
+              });
+              
+              savedThemesList.appendChild(themeEl);
+            });
+          } else {
+            savedThemesContainer.style.display = 'none';
+          }
+        }
+        
+        // Initialize saved themes list
+        updateSavedThemesList();
+        
+        console.log("Theme editor functionality setup complete");
+      }, 500);
+    }
+    
+    // Add the theme editor tab
+    addThemeEditorTab();
+    
+    // Add a direct method to access the theme editor
+    window.openThemeEditor = function() {
+      console.log("Opening theme editor via direct method");
+      const themeButton = document.getElementById('theme-editor-tab');
+      if (themeButton) {
+        themeButton.click();
+      } else {
+        console.error("Theme editor tab button not found");
       }
+    };
+    
+    // Add a button to the header to access the theme editor
+    const header = document.querySelector('header');
+    if (header) {
+      const themeEditorButton = document.createElement('button');
+      themeEditorButton.className = 'btn btn-primary';
+      themeEditorButton.style.marginTop = '10px';
+      themeEditorButton.textContent = 'Open Theme Editor';
+      themeEditorButton.addEventListener('click', function() {
+        window.openThemeEditor();
+      });
+      header.appendChild(themeEditorButton);
+      console.log("Added theme editor button to header");
     }
   });
 </script>
