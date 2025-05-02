@@ -1534,5 +1534,40 @@ Perfectionism"></textarea>
         // Initialize preview
         updatePreview();
     </script>
+    <!--Script Theme Editor-->
+    <script>
+  // This script will add a new "Theme Editor" tab to your CV builder
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add theme editor tab
+    const tabList = document.querySelector('.tab-list');
+    if (tabList) {
+      // Convert to 3 columns
+      tabList.style.gridTemplateColumns = '1fr 1fr 1fr';
+      
+      // Create theme editor button
+      const themeButton = document.createElement('div');
+      themeButton.className = 'tab-trigger';
+      themeButton.setAttribute('data-tab', 'theme');
+      themeButton.textContent = 'Theme Editor';
+      tabList.appendChild(themeButton);
+      
+      // Create theme tab content
+      const container = document.querySelector('.container');
+      if (container) {
+        const themeTab = document.createElement('div');
+        themeTab.className = 'tab-content';
+        themeTab.id = 'theme-tab';
+        container.appendChild(themeTab);
+        
+        // Add theme editor content (the HTML for the editor UI)
+        themeTab.innerHTML = `
+          <!-- Theme editor UI will be inserted here -->
+        `;
+        
+        // Add event listeners for the theme editor functionality
+      }
+    }
+  });
+</script>
 </body>
 </html>
