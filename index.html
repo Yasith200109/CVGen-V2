@@ -718,7 +718,7 @@ Attention to detail"></textarea>
                     </div>
                 </div>
                 
-                <!-- Weaknesses -->
+                <!-- Languages -->
                 <div class="card">
                     <div class="card-title">
                         <svg class="icon icon-md card-title-icon" viewBox="0 0 24 24">
@@ -727,10 +727,10 @@ Attention to detail"></textarea>
                         <h2>Languages</h2>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="weaknesses">List your weaknesses (one per line)</label>
-                        <textarea class="form-textarea" id="weaknesses" placeholder="Public speaking
-Work-life balance
-Perfectionism"></textarea>
+                        <label class="form-label" for="languages">List your languages (one per line)</label>
+                        <textarea class="form-textarea" id="languages" placeholder="Sinhala
+English
+Tamil"></textarea>
                     </div>
                 </div>
             </div>
@@ -815,8 +815,8 @@ Perfectionism"></textarea>
                         </div>
                         
                         <div class="resume-section">
-                            <h3 class="resume-section-title-light">Weaknesses</h3>
-                            <ul class="resume-list" id="preview-weaknesses">
+                            <h3 class="resume-section-title-light">Languages</h3>
+                            <ul class="resume-list" id="preview-languages">
                                 <li class="placeholder-text">Public speaking</li>
                             </ul>
                         </div>
@@ -901,7 +901,7 @@ Perfectionism"></textarea>
             skills: '',
             achievements: '',
             strengths: '',
-            weaknesses: ''
+            languages: ''
         };
         
         // Form elements
@@ -915,7 +915,7 @@ Perfectionism"></textarea>
         const skillsInput = document.getElementById('skills');
         const achievementsInput = document.getElementById('achievements');
         const strengthsInput = document.getElementById('strengths');
-        const weaknessesInput = document.getElementById('weaknesses');
+        const languagesInput = document.getElementById('languages');
         
         // Preview elements
         const previewName = document.getElementById('preview-name');
@@ -933,7 +933,7 @@ Perfectionism"></textarea>
         const previewSkills = document.getElementById('preview-skills');
         const previewAchievements = document.getElementById('preview-achievements');
         const previewStrengths = document.getElementById('preview-strengths');
-        const previewWeaknesses = document.getElementById('preview-weaknesses');
+        const previewLanguagess = document.getElementById('preview-languages');
         const resumePhoto = document.getElementById('resume-photo');
         const resumePhotoPlaceholder = document.getElementById('resume-photo-placeholder');
         
@@ -993,7 +993,7 @@ Perfectionism"></textarea>
             updateBulletList(previewSkills, formData.skills, 'Your skills will appear here...');
             updateBulletList(previewAchievements, formData.achievements, 'Your achievements will appear here...');
             updateBulletList(previewStrengths, formData.strengths, 'Problem solving');
-            updateBulletList(previewWeaknesses, formData.weaknesses, 'Public speaking');
+            updateBulletList(previewLanguages, formData.languages, 'Public speaking');
             
             // Update education
             updateEducation();
@@ -1148,8 +1148,8 @@ Perfectionism"></textarea>
             updatePreview();
         });
         
-        weaknessesInput.addEventListener('input', e => {
-            formData.weaknesses = e.target.value;
+        languagesInput.addEventListener('input', e => {
+            formData.languages = e.target.value;
             updatePreview();
         });
         
@@ -1512,11 +1512,11 @@ Perfectionism"></textarea>
                         ...createBulletList(formData.strengths),
                         new Paragraph({ spacing: { after: 200 } }),
                         new Paragraph({
-                            text: 'Weaknesses',
+                            text: 'Languages',
                             heading: HeadingLevel.HEADING_2,
                             thematicBreak: true
                         }),
-                        ...createBulletList(formData.weaknesses)
+                        ...createBulletList(formData.languages)
                     ]
                 }]
             });
