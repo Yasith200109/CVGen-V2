@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional CV Builder - Create a stunning CV in minutes</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1 class="gradient-text">Professional CV Builder</h1>
+        <p class="subtitle">Create a stunning CV in minutes and export in multiple formats</p>
+    </header>
+    
+    <main class="container">
+        <div class="tabs">
+            <div class="tab-list">
+                <div class="tab-trigger active" data-tab="form">Edit CV</div>
+                <div class="tab-trigger" data-tab="preview">Preview</div>
+            </div>
+        </div>
+        
+        <div class="tab-content active" id="form-tab">
+            <div class="form-grid">
+                 <div class="card">
+                    <div class="card-title"><h2>Personal Information</h2></div>
+                    <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" type="text" data-key="name"></div>
+                    <div class="form-group"><label class="form-label">Professional Title</label><input class="form-input" type="text" data-key="title"></div>
+                    <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" data-key="email"></div>
+                    <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" type="tel" data-key="phone"></div>
+                    <div class="form-group"><label class="form-label">Address / Location</label><input class="form-input" type="text" data-key="address"></div>
+                    <div class="form-group"><label class="form-label">LinkedIn URL</label><input class="form-input" type="text" data-key="linkedin"></div>
+                    <div class="form-group"><label class="form-label">Profile Photo</label><input class="form-input" type="file" id="photo"></div>
+                </div>
+                <div class="card">
+                    <div class="card-title"><h2>Profile / About Me</h2></div>
+                    <textarea class="form-textarea" data-key="objective" rows="5"></textarea>
+                </div>
+                <div class="card">
+                    <div class="card-title"><h2>Skills</h2></div>
+                    <textarea class="form-textarea" data-key="skills" rows="5" placeholder="Enter skills one per line..."></textarea>
+                </div>
+                <div class="card full-width-card">
+                    <div class="card-header"><div class="card-title"><h2>Experience</h2></div><button class="btn btn-outline btn-sm" id="add-experience">Add Experience</button></div>
+                    <div id="experience-container"></div>
+                </div>
+                <div class="card full-width-card">
+                    <div class="card-header"><div class="card-title"><h2>Education</h2></div><button class="btn btn-outline btn-sm" id="add-education">Add Education</button></div>
+                    <div id="education-container"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="preview-tab">
+            <div class="preview-layout">
+                <div class="preview-sidebar">
+                    <div class="card">
+                        <div class="card-title"><h2>Select a Template</h2></div>
+                        <div class="template-selector-vertical">
+                            <label class="template-option active"><input type="radio" name="template" value="modern-sidebar" checked><span>Modern Sidebar</span></label>
+                            <label class="template-option"><input type="radio" name="template" value="blue-minimalist"><span>Blue Minimalist</span></label>
+                            <label class="template-option"><input type="radio" name="template" value="graphic-designer"><span>Modern Minimalist</span></label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="preview-main">
+                    <div class="export-buttons">
+                         <button class="btn-export" id="export-pdf">
+                            <svg class="icon" viewBox="0 0 24 24"><path fill="currentColor" d="M14 2H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 13H8v-2h5v2zm3-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"></path></svg>
+                            <span>Download as PDF</span>
+                         </button>
+                         <button class="btn-export" id="export-png">
+                            <svg class="icon" viewBox="0 0 24 24"><path fill="currentColor" d="M21.41 5.59L18.83 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7.17l-3.59-3.58zM15 11h-2v2H9v-2H7V9h2V7h2v2h2v2zm4-3.5V5l-5-5H5v14h14V7.5h-4.5V4z"></path></svg>
+                             <span>Download as PNG</span>
+                         </button>
+                    </div>
+                    <div id="resume-wrapper">
+                        <div id="resume"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer><p>&copy; <span id="current-year"></span> Professional CV Builder. All rights reserved.</p></footer>
+    <script src="script.js"></script>
+</body>
+</html>
