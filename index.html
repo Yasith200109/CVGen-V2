@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional CV Builder - Modern UI</title>
+    
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    
+    <!-- Icons & Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="theme-toggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- Modern Header -->
+    <header class="modern-header">
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h1 class="logo-text">Professional <span class="gradient-text">CV Builder</span></h1>
+            </div>
+            <p class="header-subtitle">Create a stunning CV in minutes and export in multiple formats</p>
+        </div>
+    </header>
+    
+    <main class="main-wrapper">
+        <!-- Modern Tab Navigation -->
+        <div class="modern-tabs">
+            <div class="tab-container">
+                <div class="tab-item active" data-tab="form">
+                    <div class="tab-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <span class="tab-label">Edit CV</span>
+                    <div class="tab-indicator"></div>
+                </div>
+                <div class="tab-item" data-tab="preview">
+                    <div class="tab-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <span class="tab-label">Preview & Download</span>
+                    <div class="tab-indicator"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form Tab Content -->
+        <div class="tab-content active" id="form-tab">
+            <div class="form-container">
+                <!-- Personal Information Card -->
+                <div class="modern-card animate-in">
+                    <div class="card-header">
+                        <div class="header-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h2 class="card-title">Personal Information</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="input-row">
+                            <div class="modern-input-group">
+                                <label class="modern-label">
+                                    <i class="fas fa-signature"></i>
+                                    Full Name
+                                </label>
+                                <input type="text" class="modern-input" data-key="name" placeholder="Enter your full name">
+                                <span class="input-border"></span>
+                            </div>
+                            <div class="modern-input-group">
+                                <label class="modern-label">
+                                    <i class="fas fa-briefcase"></i>
+                                    Professional Title
+                                </label>
+                                <input type="text" class="modern-input" data-key="title" placeholder="e.g. Senior Developer">
+                                <span class="input-border"></span>
+                            </div>
+                        </div>
+                        <div class="input-row">
+                            <div class="modern-input-group">
+                                <label class="modern-label">
+                                    <i class="fas fa-envelope"></i>
+                                    Email
+                                </label>
+                                <input type="email" class="modern-input" data-key="email" placeholder="your@email.com">
+                                <span class="input-border"></span>
+                            </div>
+                            <div class="modern-input-group">
+                                <label class="modern-label">
+                                    <i class="fas fa-phone"></i>
+                                    Phone Number
+                                </label>
+                                <input type="tel" class="modern-input" data-key="phone" placeholder="+94 77 123 4567">
+                                <span class="input-border"></span>
+                            </div>
+                        </div>
+                        <div class="input-row">
+                            <div class="modern-input-group">
+                                <label class="modern-label">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Address / Location
+                                </label>
+                                <input type="text" class="modern-input" data-key="address" placeholder="City, Country">
+                                <span class="input-border"></span>
+                            </div>
+                            <div class="modern-input-group">
+                                <label class="modern-label">
+                                    <i class="fab fa-linkedin"></i>
+                                    LinkedIn URL
+                                </label>
+                                <input type="text" class="modern-input" data-key="linkedin" placeholder="linkedin.com/in/yourprofile">
+                                <span class="input-border"></span>
+                            </div>
+                        </div>
+                        <div class="modern-input-group">
+                            <label class="modern-label">
+                                <i class="fas fa-camera"></i>
+                                Profile Photo
+                            </label>
+                            <div class="file-upload-area">
+                                <input type="file" class="file-input" id="photo" accept="image/*">
+                                <label for="photo" class="file-label">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span>Click to upload or drag and drop</span>
+                                    <small>PNG, JPG up to 5MB</small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Summary Card -->
+                <div class="modern-card animate-in">
+                    <div class="card-header">
+                        <div class="header-icon">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <h2 class="card-title">Profile / About Me</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="modern-input-group">
+                            <label class="modern-label">
+                                <i class="fas fa-align-left"></i>
+                                Professional Summary
+                            </label>
+                            <textarea class="modern-textarea" data-key="objective" rows="5" 
+                                placeholder="Write a brief summary about yourself..."></textarea>
+                            <span class="input-border"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills Card -->
+                <div class="modern-card animate-in">
+                    <div class="card-header">
+                        <div class="header-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <h2 class="card-title">Skills</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="modern-input-group">
+                            <label class="modern-label">
+                                <i class="fas fa-list"></i>
+                                Your Skills (one per line)
+                            </label>
+                            <textarea class="modern-textarea" data-key="skills" rows="5" 
+                                placeholder="JavaScript&#10;React&#10;Node.js&#10;Python"></textarea>
+                            <span class="input-border"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experience Section -->
+                <div class="modern-card full-width animate-in">
+                    <div class="card-header">
+                        <div class="header-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h2 class="card-title">Experience</h2>
+                        <button class="modern-btn-add" id="add-experience">
+                            <i class="fas fa-plus"></i>
+                            Add Experience
+                        </button>
+                    </div>
+                    <div class="card-content">
+                        <div id="experience-container" class="dynamic-content"></div>
+                    </div>
+                </div>
+
+                <!-- Education Section -->
+                <div class="modern-card full-width animate-in">
+                    <div class="card-header">
+                        <div class="header-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h2 class="card-title">Education</h2>
+                        <button class="modern-btn-add" id="add-education">
+                            <i class="fas fa-plus"></i>
+                            Add Education
+                        </button>
+                    </div>
+                    <div class="card-content">
+                        <div id="education-container" class="dynamic-content"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Preview Tab Content -->
+        <div class="tab-content" id="preview-tab">
+            <div class="preview-container">
+                <!-- Modern Sidebar -->
+                <div class="preview-sidebar">
+                    <div class="modern-card">
+                        <div class="card-header">
+                            <div class="header-icon">
+                                <i class="fas fa-palette"></i>
+                            </div>
+                            <h2 class="card-title">Select Template</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="template-selector">
+                                <label class="template-item active">
+                                    <input type="radio" name="template" value="modern-sidebar" checked>
+                                    <div class="template-card">
+                                        <div class="template-icon">
+                                            <i class="fas fa-th-list"></i>
+                                        </div>
+                                        <span>Modern Sidebar</span>
+                                    </div>
+                                </label>
+                                <label class="template-item">
+                                    <input type="radio" name="template" value="blue-minimalist">
+                                    <div class="template-card">
+                                        <div class="template-icon">
+                                            <i class="fas fa-square"></i>
+                                        </div>
+                                        <span>Blue Minimalist</span>
+                                    </div>
+                                </label>
+                                <label class="template-item">
+                                    <input type="radio" name="template" value="graphic-designer">
+                                    <div class="template-card">
+                                        <div class="template-icon">
+                                            <i class="fas fa-paint-brush"></i>
+                                        </div>
+                                        <span>Graphic Designer</span>
+                                    </div>
+                                </label>
+                                <label class="template-item">
+                                    <input type="radio" name="template" value="creative-portfolio">
+                                    <div class="template-card">
+                                        <div class="template-icon">
+                                            <i class="fas fa-palette"></i>
+                                        </div>
+                                        <span>Creative Portfolio</span>
+                                    </div>
+                                </label>
+                                <label class="template-item">
+                                    <input type="radio" name="template" value="executive-professional">
+                                    <div class="template-card">
+                                        <div class="template-icon">
+                                            <i class="fas fa-user-tie"></i>
+                                        </div>
+                                        <span>Executive Professional</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Preview Main Area -->
+                <div class="preview-main">
+                    <div class="export-toolbar">
+                        <button class="export-button pdf" id="export-pdf">
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Download PDF</span>
+                        </button>
+                        <button class="export-button png" id="export-png">
+                            <i class="fas fa-file-image"></i>
+                            <span>Download PNG</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Resume Preview -->
+                    <div id="resume-wrapper">
+                        <div id="resume"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modern Footer -->
+    <footer class="modern-footer">
+        <p>&copy; <span id="current-year"></span> Professional CV Builder. Made with <i class="fas fa-heart"></i> in Sri Lanka</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
